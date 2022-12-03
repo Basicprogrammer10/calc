@@ -1,11 +1,25 @@
-use std::env;
+use std::{
+    env,
+    io::{stdin, stdout, Write},
+};
 
 fn main() {
-    let i = env::args().nth(1).unwrap();
-    let tokens = tokenize(&i);
-    let tree = create_tree(tokens);
-    let result = evaluate(tree);
-    println!("{i} 🠮 {result}");
+    let args = env::args().collect::<Vec<_>>();
+
+    if let Some(i) = args.get(1) {
+        let quiet = args.contains(&"--quiet".to_string());
+        let result = evaluate(create_tree(tokenize(&i)));
+        println!("{}{result}", if quiet { "" } else { " ⮩ " });
+    }
+
+    loop {
+        let mut input = String::new();
+        print!(" ▷ ");
+        stdout().flush().unwrap();
+        stdin().read_line(&mut input).unwrap();
+        let result = evaluate(create_tree(tokenize(&input)));
+        println!("  ⮩ {result}");
+    }
 }
 
 type Num = f64;

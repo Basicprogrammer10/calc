@@ -1,0 +1,26 @@
+- [ ] Dymamc persision
+- [ ] Modulo operator
+- [ ] Varable Support
+- [ ] Functions
+  - [ ] sqrt
+  - [ ] (other roots)
+  - [ ] Trig (sin, cos, tan, asin, acos, atan, atan2)
+  - [ ] Log
+  - [ ] Ln
+  - [ ] Factorial
+  - [ ] Gcf
+  - [ ] Lcd
+  - [ ] Round
+  - [ ] Floor
+  - [ ] Ceil
+  - [ ] Rand (seedable)
+  - [ ] Sign
+- [ ] Consts
+  - [ ] Pi
+  - [ ] E
+  - [ ] Tau
+  - [ ] Phi
+  - [ ] Golden Ratio
+  - [ ] Avogadro's Number
+  - [ ] ANS
+  - [ ] #n
