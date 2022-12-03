@@ -114,8 +114,12 @@ fn create_tree(mut tokens: Vec<Token>) -> Result<Token> {
         Ok(tokens.remove(index as usize))
     }
 
-    if tokens.len() == 1 && matches!(tokens[0], Token::Number(_)) {
-        return Ok(tokens.pop().unwrap());
+    if tokens.len() == 1 {
+        match tokens.pop().unwrap() {
+            Token::Number(i) => return Ok(Token::Number(i)),
+            Token::Group(i) => return create_tree(i),
+            _ => {}
+        }
     }
 
     while contains_non_tree(&tokens) {
