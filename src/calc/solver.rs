@@ -1,6 +1,10 @@
 use std::{collections::HashMap, f64};
 
-use super::{Error, Num, Ops, Result, Token};
+use super::{
+    funcs::{Function, FUNCTIONS},
+    tree::create_tree,
+    Error, Num, Ops, Result, Token,
+};
 
 const CONSTANTS: &[(&str, Token)] = &[
     ("pi", Token::Number(f64::consts::PI)),
@@ -10,7 +14,7 @@ const CONSTANTS: &[(&str, Token)] = &[
 
 pub struct Context {
     pub vars: HashMap<String, Token>,
-    // pub funcs
+    pub funcs: HashMap<String, &'static dyn Function>,
 }
 
 impl Context {
@@ -20,6 +24,10 @@ impl Context {
                 .iter()
                 .map(|(n, v)| (n.to_string(), v.clone()))
                 .collect(),
+            funcs: FUNCTIONS
+                .iter()
+                .map(|x| (x.name().to_string(), *x))
+                .collect(),
         }
     }
 
@@ -27,7 +35,7 @@ impl Context {
         self.vars.insert(name.to_string(), value);
     }
 
-    pub fn evaluate(&self, tree: Token) -> Result<Num> {
+    pub fn evaluate(&mut self, tree: Token) -> Result<Num> {
         match tree {
             Token::Tree(op, left, right) => {
                 let left = self.evaluate(*left)?;
@@ -49,6 +57,19 @@ impl Context {
                     .cloned()
                     .ok_or(Error::UnknownIdentifier(n))?,
             ),
+            Token::Func(n, args) => {
+                let func = self
+                    .funcs
+                    .get(&n.to_lowercase())
+                    .ok_or(Error::UnknownIdentifier(n))?;
+
+                Ok(func.call(
+                    args.iter()
+                        .flat_map(|x| create_tree(x.to_owned()))
+                        .collect(),
+                    self,
+                )?)
+            }
             _ => panic!("Invalid token {:?}", tree),
         }
     }

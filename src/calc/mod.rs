@@ -1,5 +1,6 @@
 use std::{fmt::Display, result};
 
+mod funcs;
 pub mod solver;
 pub mod tokens;
 pub mod tree;
@@ -9,16 +10,16 @@ pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Debug, Clone)]
 pub enum Token {
-    // Basic tokens
+    // == Basic tokens ==
     Number(Num),
     Op(Ops),
     Group(Vec<Token>),
 
-    // Dynamic
-    Func(String, Vec<Token>),
+    // == Dynamic ==
+    Func(String, Vec<Vec<Token>>),
     Var(String),
 
-    // Misc
+    // == Misc ==
     Tree(Ops, Box<Token>, Box<Token>),
 }
 
@@ -42,6 +43,9 @@ pub enum Error {
 
     // Solver
     UnknownIdentifier(String),
+
+    // Function
+    InvalidArgumentCount(String, usize, usize),
 }
 
 impl Ops {
@@ -69,6 +73,10 @@ impl Display for Error {
             Error::InvalidNumber(n) => format!("Invalid number: `{}`", n),
             Error::InvalidExpression => "Invalid expression".to_string(),
             Error::UnknownIdentifier(n) => format!("Unknown identifier: `{}`", n),
+            Error::InvalidArgumentCount(n, a, e) => format!(
+                "Invalid argument count for `{}`: expected {}, got {}",
+                n, e, a
+            ),
         })
     }
 }

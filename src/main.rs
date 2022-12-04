@@ -1,3 +1,5 @@
+// #![feature(result_option_inspect)]
+
 use std::{
     env,
     io::{stdin, stdout, Write},
@@ -33,7 +35,9 @@ fn main() {
         stdout().flush().unwrap();
         stdin().read_line(&mut input).unwrap();
         let result = tokenize(&input)
+            // .inspect(|x| println!("TOKENIZE {:?}", x))
             .and_then(create_tree)
+            // .inspect(|x| println!("TREE {:?}", x))
             .and_then(|x| context.evaluate(x));
 
         if let Ok(i) = result {

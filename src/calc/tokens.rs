@@ -17,7 +17,18 @@ pub fn tokenize(inp: &str) -> Result<Vec<Token>> {
             i if i.is_whitespace() => continue,
 
             // Groups
-            '(' => ctx.in_group = true,
+            '(' => {
+                flush_working(&mut ctx)?;
+                ctx.in_group = true;
+            }
+            ')' if matches!(ctx.out.last(), Some(Token::Var(_))) => {
+                ctx.in_group = false;
+                *ctx.out.last_mut().unwrap() = Token::Func(
+                    var_name(ctx.out.last().unwrap()).unwrap().to_owned(),
+                    tokenize_args(&ctx.working)?,
+                );
+                ctx.working.clear();
+            }
             ')' => {
                 ctx.in_group = false;
                 ctx.out.push(Token::Group(tokenize(&ctx.working)?));
@@ -100,4 +111,20 @@ fn add_op(op: Ops, ctx: &mut TokenizeContext) -> Result<()> {
     flush_working(ctx)?;
     ctx.out.push(Token::Op(op));
     Ok(())
+}
+
+fn tokenize_args(inp: &str) -> Result<Vec<Vec<Token>>> {
+    let mut out = Vec::new();
+    for i in inp.split(',') {
+        out.push(tokenize(i)?);
+    }
+
+    Ok(out)
+}
+
+fn var_name(token: &Token) -> Option<&str> {
+    match token {
+        Token::Var(i) => Some(i),
+        _ => None,
+    }
 }

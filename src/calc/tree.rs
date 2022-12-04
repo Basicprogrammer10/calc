@@ -9,6 +9,7 @@ pub fn create_tree(mut tokens: Vec<Token>) -> Result<Token> {
             Token::Number(i) => return Ok(Token::Number(i)),
             Token::Group(i) => return create_tree(i),
             Token::Var(i) => return Ok(Token::Var(i)),
+            Token::Func(i, j) => return Ok(Token::Func(i, j)),
             _ => {}
         }
     }
