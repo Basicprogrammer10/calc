@@ -1,6 +1,4 @@
-- [ ] Dymamc persision
 - [ ] Modulo operator
-- [ ] Varable Support
 - [ ] Functions
   - [ ] sqrt
   - [ ] (other roots)
@@ -16,11 +14,5 @@
   - [ ] Rand (seedable)
   - [ ] Sign
 - [ ] Consts
-  - [ ] Pi
-  - [ ] E
-  - [ ] Tau
-  - [ ] Phi
-  - [ ] Golden Ratio
-  - [ ] Avogadro's Number
-  - [ ] ANS
+  _ [ ] Ans
   - [ ] #n

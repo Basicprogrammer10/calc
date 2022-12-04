@@ -1,29 +1,11 @@
-use super::{Error, Num, Ops, Result, Token};
-
-pub fn evaluate(tree: Token) -> Result<Num> {
-    match tree {
-        Token::Tree(op, left, right) => {
-            let left = evaluate(*left)?;
-            let right = evaluate(*right)?;
-
-            Ok(match op {
-                Ops::Add => left + right,
-                Ops::Sub => left - right,
-                Ops::Mul => left * right,
-                Ops::Div => left / right,
-                Ops::Pow => left.powf(right),
-            })
-        }
-        Token::Number(n) => Ok(n),
-        _ => panic!("Invalid token {:?}", tree),
-    }
-}
+use super::{Error, Result, Token};
 
 pub fn create_tree(mut tokens: Vec<Token>) -> Result<Token> {
     if tokens.len() == 1 {
         match tokens.pop().unwrap() {
             Token::Number(i) => return Ok(Token::Number(i)),
             Token::Group(i) => return create_tree(i),
+            Token::Var(i) => return Ok(Token::Var(i)),
             _ => {}
         }
     }

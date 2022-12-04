@@ -1,5 +1,6 @@
 use std::{fmt::Display, result};
 
+pub mod solver;
 pub mod tokens;
 pub mod tree;
 
@@ -8,10 +9,18 @@ pub type Result<T> = result::Result<T, Error>;
 
 #[derive(Debug, Clone)]
 pub enum Token {
+    // Basic tokens
     Number(Num),
     Op(Ops),
     Group(Vec<Token>),
+
+    // Dynamic
+    Func(String, Vec<Token>),
+    Var(String),
+
+    // Misc
     Tree(Ops, Box<Token>, Box<Token>),
+    Null,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -26,10 +35,12 @@ pub enum Ops {
 pub enum Error {
     // Tokenizer
     InvalidNumber(String),
-    UnexpectedChar(char),
 
-    // Tree
+    // Tree (more detailed?)
     InvalidExpression,
+
+    // Solver
+    UnknownIdentifier(String),
 }
 
 impl Ops {
@@ -53,14 +64,10 @@ impl Token {
 
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                Error::InvalidNumber(n) => format!("Invalid number: `{}`", n),
-                Error::UnexpectedChar(c) => format!("Unexpected character: `{}`", c),
-                Error::InvalidExpression => "Invalid expression".to_string(),
-            }
-        )
+        f.write_str(&match self {
+            Error::InvalidNumber(n) => format!("Invalid number: `{}`", n),
+            Error::InvalidExpression => "Invalid expression".to_string(),
+            Error::UnknownIdentifier(n) => format!("Unknown identifier: `{}`", n),
+        })
     }
 }
