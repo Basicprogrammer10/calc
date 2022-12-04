@@ -39,6 +39,7 @@ impl Context {
                     Ops::Mul => left * right,
                     Ops::Div => left / right,
                     Ops::Pow => left.powf(right),
+                    Ops::Mod => left % right,
                 })
             }
             Token::Number(n) => Ok(n),

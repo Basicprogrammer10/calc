@@ -20,7 +20,6 @@ pub enum Token {
 
     // Misc
     Tree(Ops, Box<Token>, Box<Token>),
-    Null,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -30,8 +29,10 @@ pub enum Ops {
     Mul,
     Div,
     Pow,
+    Mod,
 }
 
+#[derive(Debug)]
 pub enum Error {
     // Tokenizer
     InvalidNumber(String),
@@ -47,7 +48,7 @@ impl Ops {
     fn prio(&self) -> usize {
         match self {
             Ops::Add | Ops::Sub => 1,
-            Ops::Mul | Ops::Div => 2,
+            Ops::Mul | Ops::Div | Ops::Mod => 2,
             Ops::Pow => 3,
         }
     }

@@ -1,5 +1,8 @@
+use std::collections::HashMap;
+
 use super::{Error, Result, Token};
 
+// assumes no Trees in the input
 pub fn create_tree(mut tokens: Vec<Token>) -> Result<Token> {
     if tokens.len() == 1 {
         match tokens.pop().unwrap() {
@@ -10,12 +13,12 @@ pub fn create_tree(mut tokens: Vec<Token>) -> Result<Token> {
         }
     }
 
-    while contains_non_tree(&tokens) {
-        let max_prio = get_max_prio(&tokens)?;
-
+    let mut prios = get_max_prio(&tokens)?;
+    while tokens.len() > 1 {
         let mut i = 0;
         while i < tokens.len() {
             if let Token::Op(op) = tokens[i] {
+                let max_prio = *prios.iter().max_by(|a, b| a.1.cmp(b.1)).unwrap().0;
                 if op.prio() < max_prio {
                     i += 1;
                     continue;
@@ -25,6 +28,7 @@ pub fn create_tree(mut tokens: Vec<Token>) -> Result<Token> {
                 let right = safe_remove(&mut tokens, i as isize)?.make_tree()?;
 
                 tokens[i - 1] = Token::Tree(op, Box::new(left), Box::new(right));
+                prios.entry(op.prio()).and_modify(|x| *x -= 1);
                 break;
             }
 
@@ -39,28 +43,17 @@ pub fn create_tree(mut tokens: Vec<Token>) -> Result<Token> {
     Ok(tokens[0].clone())
 }
 
-// can be optmised
-fn get_max_prio(tokens: &[Token]) -> Result<usize> {
-    match tokens
-        .iter()
-        .filter_map(|x| match x {
-            Token::Op(i) => Some(i.prio()),
-            _ => None,
-        })
-        .max()
-    {
-        Some(i) => Ok(i),
-        None => Err(Error::InvalidExpression),
-    }
-}
+// Maps (Prio, Count)
+fn get_max_prio(tokens: &[Token]) -> Result<HashMap<usize, usize>> {
+    let mut out = HashMap::new();
 
-// can be optmised
-fn contains_non_tree(tokens: &[Token]) -> bool {
-    tokens
-        .iter()
-        .filter(|x| !matches!(x, Token::Tree(_, _, _)))
-        .count()
-        > 0
+    for i in tokens {
+        if let Token::Op(op) = i {
+            *out.entry(op.prio()).or_insert(0) += 1;
+        }
+    }
+
+    Ok(out)
 }
 
 fn safe_remove(tokens: &mut Vec<Token>, index: isize) -> Result<Token> {

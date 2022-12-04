@@ -1,4 +1,4 @@
-- [ ] Modulo operator
+- [ ] Config file to save default variables also cli arg
 - [ ] Functions
   - [ ] sqrt
   - [ ] (other roots)
@@ -13,6 +13,3 @@
   - [ ] Ceil
   - [ ] Rand (seedable)
   - [ ] Sign
-- [ ] Consts
-  _ [ ] Ans
-  - [ ] #n

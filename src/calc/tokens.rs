@@ -38,6 +38,7 @@ pub fn tokenize(inp: &str) -> Result<Vec<Token>> {
             '*' => add_op(Ops::Mul, &mut ctx)?,
             '/' => add_op(Ops::Div, &mut ctx)?,
             '^' => add_op(Ops::Pow, &mut ctx)?,
+            '%' => add_op(Ops::Mod, &mut ctx)?,
 
             // Numbers
             _ => {
