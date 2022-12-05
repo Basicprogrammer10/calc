@@ -1,3 +1,5 @@
+- [ ] Fix nexted groups
+- [ ] Implicit multplacation
 - [ ] Config file to save default variables also cli arg
 - [ ] Functions
   - [ ] sqrt

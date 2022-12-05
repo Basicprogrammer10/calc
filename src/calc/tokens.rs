@@ -2,10 +2,10 @@ use super::{Error, Num, Ops, Result, Token};
 
 struct TokenizeContext {
     out: Vec<Token>,
-    working: String,
+    working: Vec<String>,
 
     next_neg: bool,
-    in_group: bool,
+    group_depth: usize,
     is_num: bool,
 }
 
@@ -19,22 +19,22 @@ pub fn tokenize(inp: &str) -> Result<Vec<Token>> {
             // Groups
             '(' => {
                 flush_working(&mut ctx)?;
-                ctx.in_group = true;
+                ctx.group_depth += 1;
             }
             ')' if matches!(ctx.out.last(), Some(Token::Var(_))) => {
-                ctx.in_group = false;
+                ctx.group_depth -= 1;
                 *ctx.out.last_mut().unwrap() = Token::Func(
                     var_name(ctx.out.last().unwrap()).unwrap().to_owned(),
-                    tokenize_args(&ctx.working)?,
+                    tokenize_args(&ctx.working())?,
                 );
-                ctx.working.clear();
+                ctx.working_mut().clear();
             }
             ')' => {
-                ctx.in_group = false;
-                ctx.out.push(Token::Group(tokenize(&ctx.working)?));
-                ctx.working.clear();
+                ctx.group_depth -= 1;
+                ctx.out.push(Token::Group(tokenize(&ctx.working())?));
+                ctx.working_mut().clear();
             }
-            i if ctx.in_group => ctx.working.push(i),
+            i if ctx.group_depth > 0 => ctx.working_mut().push(i),
 
             // Operations
             '-' => {
@@ -53,7 +53,7 @@ pub fn tokenize(inp: &str) -> Result<Vec<Token>> {
 
             // Numbers
             _ => {
-                ctx.working.push(i);
+                ctx.working_mut().push(i);
                 ctx.is_num &= is_digit(i);
             }
         }
@@ -70,12 +70,20 @@ impl TokenizeContext {
     fn new() -> Self {
         Self {
             out: Vec::new(),
-            working: String::new(),
+            working: vec![String::new()],
 
             next_neg: false,
-            in_group: false,
+            group_depth: 0,
             is_num: true,
         }
+    }
+
+    fn working_mut(&mut self) -> &mut String {
+        self.working.last_mut().unwrap()
+    }
+
+    fn working(&self) -> &String {
+        self.working.last().unwrap()
     }
 }
 
@@ -85,14 +93,14 @@ fn is_digit(chr: char) -> bool {
 
 fn add_num(ctx: &mut TokenizeContext) -> Result<()> {
     if !ctx.is_num {
-        ctx.out.push(Token::Var(ctx.working.to_string()));
+        ctx.out.push(Token::Var(ctx.working().to_string()));
         return Ok(());
     }
 
     ctx.out
-        .push(Token::Number(match ctx.working.parse::<Num>() {
+        .push(Token::Number(match ctx.working().parse::<Num>() {
             Ok(i) => i.copysign(if ctx.next_neg { -1. } else { 0. }),
-            Err(_) => return Err(Error::InvalidNumber(ctx.working.to_string())),
+            Err(_) => return Err(Error::InvalidNumber(ctx.working().to_string())),
         }));
     Ok(())
 }
@@ -102,7 +110,7 @@ fn flush_working(ctx: &mut TokenizeContext) -> Result<()> {
         add_num(ctx)?;
         ctx.next_neg = false;
         ctx.is_num = true;
-        ctx.working.clear();
+        ctx.working_mut().clear();
     }
     Ok(())
 }

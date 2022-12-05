@@ -7,6 +7,18 @@ pub trait Function {
     fn call(&self, args: Vec<Token>, context: &mut Context) -> Result<Num>;
 }
 
+pub fn reqire_args(name: &str, args: &[Token], count: usize) -> Result<()> {
+    if args.len() != count {
+        return Err(Error::InvalidArgumentCount(
+            name.to_owned(),
+            args.len(),
+            count,
+        ));
+    }
+
+    Ok(())
+}
+
 struct Sqrt;
 
 impl Function for Sqrt {
@@ -15,14 +27,7 @@ impl Function for Sqrt {
     }
 
     fn call(&self, args: Vec<Token>, context: &mut Context) -> Result<Num> {
-        if args.len() != 1 {
-            return Err(Error::InvalidArgumentCount(
-                self.name().to_owned(),
-                1,
-                args.len(),
-            ));
-        }
-
+        reqire_args(self.name(), &args, 1)?;
         return Ok(context.evaluate(args[0].to_owned())?.sqrt());
     }
 }
