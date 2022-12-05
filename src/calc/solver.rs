@@ -1,10 +1,7 @@
 use std::{collections::HashMap, f64};
 
-use super::{
-    funcs::{Function, FUNCTIONS},
-    tree::create_tree,
-    Error, Num, Ops, Result, Token,
-};
+use super::{tree::create_tree, Error, Num, Ops, Result, Token};
+use crate::funcs::{Function, FUNCTIONS};
 
 const CONSTANTS: &[(&str, Token)] = &[
     ("pi", Token::Number(f64::consts::PI)),
@@ -26,7 +23,7 @@ impl Context {
                 .collect(),
             funcs: FUNCTIONS
                 .iter()
-                .map(|x| (x.name().to_string(), *x))
+                .map(|x| (x.name().to_lowercase(), *x))
                 .collect(),
         }
     }

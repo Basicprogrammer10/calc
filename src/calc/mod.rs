@@ -1,6 +1,5 @@
 use std::{fmt::Display, result};
 
-mod funcs;
 pub mod solver;
 pub mod tokens;
 pub mod tree;

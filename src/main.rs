@@ -11,6 +11,7 @@ use colored::Colorize;
 use crate::calc::Token;
 
 mod calc;
+mod funcs;
 
 fn main() {
     let args = env::args().collect::<Vec<_>>();
