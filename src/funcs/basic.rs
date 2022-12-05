@@ -33,7 +33,6 @@ basic_func!(Log10, log10);
 basic_func!(Cbrt, cbrt);
 basic_func!(ExpM1, exp_m1);
 basic_func!(Ln1p, ln_1p);
-
 basic_func!(Sqrt, sqrt);
 basic_func!(Sin, sin);
 basic_func!(Cos, cos);
@@ -47,3 +46,7 @@ basic_func!(Tanh, tanh);
 basic_func!(Asinh, asinh);
 basic_func!(Acosh, acosh);
 basic_func!(Atanh, atanh);
+basic_func!(Recip, recip);
+basic_func!(ToDegrees, to_degrees);
+basic_func!(ToRadians, to_radians);
+basic_func!(SigNum, signum);

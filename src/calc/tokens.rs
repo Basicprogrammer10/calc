@@ -36,7 +36,6 @@ pub fn tokenize(inp: &str) -> Result<Vec<Token>> {
                 ctx.working.clear();
             }
             ')' if ctx.group_depth == 0 => {
-                println!("GROUP: {}", ctx.working);
                 ctx.out.push(Token::Group(tokenize(&ctx.working)?));
                 ctx.working.clear();
             }

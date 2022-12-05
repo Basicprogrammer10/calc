@@ -1,5 +1,7 @@
 use std::{collections::HashMap, f64};
 
+use convert_case::{Case, Casing};
+
 use super::{tree::create_tree, Error, Num, Ops, Result, Token};
 use crate::funcs::{Function, FUNCTIONS};
 
@@ -23,7 +25,7 @@ impl Context {
                 .collect(),
             funcs: FUNCTIONS
                 .iter()
-                .map(|x| (x.name().to_lowercase(), *x))
+                .map(|x| (x.name().to_case(Case::Snake), *x))
                 .collect(),
         }
     }

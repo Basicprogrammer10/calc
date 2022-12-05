@@ -1,18 +1,10 @@
-- [ ] Fix nexted groups
+- [ ] Varable assignment (Assign operator?)
+- [ ] Dont crash on overflow
 - [ ] Implicit multplacation
 - [ ] Hangs on (`(1)]`)
 - [ ] Config file to save default variables also cli arg
 - [ ] Functions
-  - [ ] sqrt
-  - [ ] (other roots)
-  - [ ] Trig (sin, cos, tan, asin, acos, atan, atan2)
-  - [ ] Log
-  - [ ] Ln
   - [ ] Factorial
   - [ ] Gcf
   - [ ] Lcd
-  - [ ] Round
-  - [ ] Floor
-  - [ ] Ceil
   - [ ] Rand (seedable)
-  - [ ] Sign

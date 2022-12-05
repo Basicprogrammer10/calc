@@ -66,6 +66,50 @@ impl Token {
     }
 }
 
+impl Display for Ops {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Ops::Add => write!(f, "+"),
+            Ops::Sub => write!(f, "-"),
+            Ops::Mul => write!(f, "*"),
+            Ops::Div => write!(f, "/"),
+            Ops::Pow => write!(f, "^"),
+            Ops::Mod => write!(f, "%"),
+        }
+    }
+}
+
+impl Display for Token {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&match self {
+            Token::Number(n) => n.to_string(),
+            Token::Op(op) => op.to_string(),
+            Token::Group(tokens) => format!(
+                "({})",
+                tokens
+                    .iter()
+                    .map(|x| x.to_string())
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            ),
+            Token::Func(name, args) => format!(
+                "{}({})",
+                name,
+                args.iter()
+                    .map(|x| x
+                        .iter()
+                        .map(|x| x.to_string())
+                        .collect::<Vec<_>>()
+                        .join(" "))
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            ),
+            Token::Var(name) => name.to_string(),
+            Token::Tree(op, left, right) => format!("({} {} {})", left, op, right),
+        })
+    }
+}
+
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(&match self {
