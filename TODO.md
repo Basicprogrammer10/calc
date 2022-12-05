@@ -1,5 +1,6 @@
 - [ ] Fix nexted groups
 - [ ] Implicit multplacation
+- [ ] Hangs on (`(1)]`)
 - [ ] Config file to save default variables also cli arg
 - [ ] Functions
   - [ ] sqrt

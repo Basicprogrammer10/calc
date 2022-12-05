@@ -28,6 +28,6 @@ impl Function for Sqrt {
 
     fn call(&self, args: Vec<Token>, context: &mut Context) -> Result<Num> {
         reqire_args(self.name(), &args, 1)?;
-        return Ok(context.evaluate(args[0].to_owned())?.sqrt());
+        Ok(context.evaluate(args[0].to_owned())?.sqrt())
     }
 }
