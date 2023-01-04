@@ -10,7 +10,7 @@ pub fn create_tree(mut tokens: Vec<Token>) -> Result<Token> {
             Token::Group(i) => return create_tree(i),
             Token::Var(i) => return Ok(Token::Var(i)),
             Token::Func(i, j) => return Ok(Token::Func(i, j)),
-            _ => {}
+            i => panic!("Invalid token in create_tree: {:?}", i),
         }
     }
 
@@ -19,7 +19,12 @@ pub fn create_tree(mut tokens: Vec<Token>) -> Result<Token> {
         let mut i = 0;
         while i < tokens.len() {
             if let Token::Op(op) = tokens[i] {
-                let max_prio = *prios.iter().max_by(|a, b| a.1.cmp(b.1)).unwrap().0;
+                let max_prio = *prios
+                    .iter()
+                    .filter(|x| *x.1 > 0)
+                    .max_by(|a, b| a.0.cmp(b.0))
+                    .unwrap()
+                    .0;
                 if op.prio() < max_prio {
                     i += 1;
                     continue;
@@ -41,6 +46,7 @@ pub fn create_tree(mut tokens: Vec<Token>) -> Result<Token> {
         return Err(Error::InvalidExpression);
     }
 
+    debug_assert!(matches!(tokens[0], Token::Tree(..)));
     Ok(tokens[0].clone())
 }
 
